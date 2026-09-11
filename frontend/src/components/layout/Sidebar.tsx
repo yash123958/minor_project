@@ -10,7 +10,6 @@ import {
   Bell,
   MapPin,
   Users,
-  Settings,
   LogOut,
   Activity,
   X,

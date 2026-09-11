@@ -20,9 +20,9 @@ export function SettingsPage() {
   const [notifPrefs, setNotifPrefs] = useState({ critical: true, high: true, medium: false, email: true, sms: false });
   const [systemPrefs, setSystemPrefs] = useState({ autoRefresh: true, riskThreshold: '60', timezone: 'IST (UTC+5:30)' });
 
-  const initialName = user?.name || user?.username || 'Admin User';
-  const initialEmail = user?.email || 'admin@example.com';
-  const initialPhone = user?.phone || '';
+  const initialName = user?.name || user?.username || '';
+  const initialEmail = user?.email ?? '';
+  const initialPhone = user?.phone ?? '';
   
   const [form, setForm] = useState({ name: initialName, email: initialEmail, phone: initialPhone });
 
@@ -95,8 +95,8 @@ export function SettingsPage() {
                   {initialName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <p className="font-semibold text-slate-900">{initialName}</p>
-                  <p className="text-sm text-slate-500">{initialEmail}</p>
+                  <p className="font-semibold text-slate-900">{initialName || 'Admin User'}</p>
+                  <p className="text-sm text-slate-500">{initialEmail || 'No email provided'}</p>
                 </div>
               </div>
               <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">

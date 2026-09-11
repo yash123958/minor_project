@@ -100,7 +100,9 @@ export function CommunityTopNav({ title, onMenuClick }: CommunityTopNavProps) {
         <div ref={profileRef} className="relative">
           <button
             onClick={() => setProfileOpen(!profileOpen)}
-            className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-slate-100"
+            className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-white/10"
+            aria-label="Open profile menu"
+            aria-expanded={profileOpen}
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-700">
               {(user?.name || user?.username || communityUser.name).split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
@@ -121,7 +123,10 @@ export function CommunityTopNav({ title, onMenuClick }: CommunityTopNavProps) {
                 My Profile
               </button>
               <button
-                onClick={() => { logout(); navigate('/'); }}
+                onClick={async () => {
+                  await logout();
+                  navigate('/');
+                }}
                 className="block w-full border-t border-slate-100 px-4 py-2 text-left text-sm text-risk-critical hover:bg-risk-critical-bg"
               >
                 Logout

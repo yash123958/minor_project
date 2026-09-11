@@ -82,9 +82,9 @@ export function AdminPage() {
 
   const toggleStatus = async (id: string) => {
     try {
-      await authPatch(`/api/manage/users/${id}/toggle/`, {});
+      const updatedUser: DjangoUser = await authPatch(`/api/manage/users/${id}/toggle/`, {});
       setUsers((prev) =>
-        prev.map((u) => (u.id === id ? { ...u, status: u.status === 'active' ? 'disabled' : 'active' } : u))
+        prev.map((u) => (u.id === id ? { ...u, status: updatedUser.is_active === false ? 'disabled' : 'active' } : u))
       );
     } catch (err: any) {
       alert(err.message || 'Failed to toggle user status');

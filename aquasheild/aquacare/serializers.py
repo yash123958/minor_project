@@ -26,6 +26,30 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'phone', 'organization', 'password', 'assigned_villages']
+        extra_kwargs = {
+            'password': {'write_only': True, 'required': False},
+            'email': {'required': False},
+            'first_name': {'required': False},
+            'last_name': {'required': False},
+            'phone': {'required': False},
+            'organization': {'required': False},
+            'assigned_villages': {'required': False},
+        }
+
+    def validate_email(self, value):
+        if not value:
+            return value
+        # Ensure email is unique, excluding the current instance being updated
+        user_id = getattr(self.instance, 'id', None)
+        if User.objects.filter(email=value).exclude(id=user_id).exists():
+            raise serializers.ValidationError('A user with this email already exists.')
+        return value
+
+
 # 2. Village Serializer (used by Dashboard & GIS Leaflet Map)
 class VillageSerializer(serializers.ModelSerializer):
     active_alerts_count = serializers.IntegerField(read_only=True)

@@ -17,13 +17,13 @@ export function CommunityProfile() {
   
   // Use actual user name from context or fallback to username
   const initialName = user?.name || user?.username || communityUser.name;
-  const initialEmail = user?.email || communityUser.email;
+  const initialEmail = user?.email ?? '';
   
   const [name, setName] = useState(initialName);
   const [email, setEmail] = useState(initialEmail);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -63,7 +63,7 @@ export function CommunityProfile() {
           </div>
           <div>
             <p className="text-lg font-bold text-slate-900">{user?.name || user?.username || communityUser.name}</p>
-            <p className="text-sm text-slate-500">{user?.email || communityUser.email}</p>
+            <p className="text-sm text-slate-500">{initialEmail || 'No email provided'}</p>
           </div>
         </div>
 
@@ -178,7 +178,7 @@ function ProfileField({ icon: Icon, label, value, editable, onChange }: { icon: 
             className="mt-0.5 w-full rounded border border-slate-200 bg-white px-2 py-1 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
           />
         ) : (
-          <p className="mt-0.5 text-sm font-medium text-slate-900">{value}</p>
+          <p className="mt-0.5 text-sm font-medium text-slate-900">{value || 'Not provided'}</p>
         )}
       </div>
     </div>

@@ -18,8 +18,8 @@ export function WorkerProfile() {
   const [editing, setEditing] = useState(false);
   
   const initialName = user?.name || user?.username || healthWorker.name;
-  const initialEmail = user?.email || healthWorker.email;
-  const initialPhone = user?.phone || '+91 98765 43210';
+  const initialEmail = user?.email ?? '';
+  const initialPhone = user?.phone ?? '';
   
   const [form, setForm] = useState({ name: initialName, email: initialEmail, phone: initialPhone });
 
@@ -42,8 +42,8 @@ export function WorkerProfile() {
     }
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -61,7 +61,7 @@ export function WorkerProfile() {
               {initialName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
             </div>
             <h3 className="mt-3 text-lg font-bold text-slate-900">{initialName}</h3>
-            <p className="text-sm text-slate-500">{initialEmail}</p>
+            <p className="text-sm text-slate-500">{initialEmail || 'No email provided'}</p>
             <div className="mt-2">
               <Badge variant="info">{user?.role === 'worker' ? 'Health Worker' : healthWorker.role}</Badge>
             </div>
@@ -70,11 +70,11 @@ export function WorkerProfile() {
           <div className="mt-6 space-y-3 border-t border-slate-200 pt-4">
             <div className="flex items-center gap-3">
               <Mail className="h-4 w-4 text-slate-400" />
-              <span className="text-sm text-slate-600">{initialEmail}</span>
+              <span className="text-sm text-slate-600">{initialEmail || 'No email provided'}</span>
             </div>
             <div className="flex items-center gap-3">
               <Phone className="h-4 w-4 text-slate-400" />
-              <span className="text-sm text-slate-600">{initialPhone}</span>
+              <span className="text-sm text-slate-600">{initialPhone || '-'}</span>
             </div>
             <div className="flex items-center gap-3">
               <HeartPulse className="h-4 w-4 text-slate-400" />
