@@ -110,10 +110,10 @@ export function TopNav({ title, onMenuClick }: TopNavProps) {
             className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-slate-100"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-700">
-              {(user?.name || currentUser.name).split(' ').map((n) => n[0]).join('').slice(0, 2)}
+              {(user?.name || user?.username || currentUser.name).split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
             </div>
             <div className="hidden text-left sm:block">
-              <p className="text-sm font-medium text-slate-900">{user?.name || currentUser.name}</p>
+              <p className="text-sm font-medium text-slate-900">{user?.name || user?.username || currentUser.name}</p>
               <p className="text-xs text-slate-500">{user?.role === 'admin' ? 'Admin' : 'Authority'}</p>
             </div>
             <ChevronDown className="hidden h-4 w-4 text-slate-400 sm:block" />

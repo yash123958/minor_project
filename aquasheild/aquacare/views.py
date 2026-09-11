@@ -98,9 +98,9 @@ def register_view(request):
     phone = data.get('phone', '').strip()
     village_id = data.get('village')
 
-    if not username or not password:
+    if not username or not password or not email or not first_name or not last_name or not phone:
         return Response(
-            {'error': 'Username and password are required.'},
+            {'error': 'All fields (username, email, password, first name, last name, phone) are required.'},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -156,15 +156,39 @@ def logout_view(request):
     return Response({'detail': 'Logged out successfully.'})
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def me_view(request):
     """
     GET /api/auth/me/
-    Returns the currently authenticated user's profile.
+    PATCH /api/auth/me/
+    Returns or updates the currently authenticated user's profile.
     """
-    serializer = UserSerializer(request.user)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+    elif request.method == 'PATCH':
+        user = request.user
+        data = request.data
+        if 'first_name' in data:
+            user.first_name = data['first_name'].strip()
+        if 'last_name' in data:
+            user.last_name = data['last_name'].strip()
+        if 'email' in data:
+            new_email = data['email'].strip()
+            if new_email and new_email != user.email:
+                if User.objects.filter(email=new_email).exclude(id=user.id).exists():
+                    return Response(
+                        {'error': 'A user with this email already exists.'},
+                        status=status.HTTP_409_CONFLICT,
+                    )
+                user.email = new_email
+        if 'phone' in data:
+            user.phone = data['phone'].strip() or None
+            
+        user.save()
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
 
 
 # ─── User Management API Views ────────────────────────────────────

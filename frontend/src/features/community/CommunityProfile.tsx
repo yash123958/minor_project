@@ -7,18 +7,41 @@ import { Toast } from '@/components/ui/Toast';
 
 export function CommunityProfile() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, updateProfile } = useAuth();
   const [language, setLanguage] = useState<'English' | 'Hindi'>(communityUser.language);
   const [notifPrefs, setNotifPrefs] = useState({ alerts: true, water: true, health: true, community: false });
   const [toastMsg, setToastMsg] = useState('');
   const [toastShow, setToastShow] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [name, setName] = useState(user?.name || communityUser.name);
-  const [email, setEmail] = useState(user?.email || communityUser.email);
+  const [saving, setSaving] = useState(false);
+  
+  // Use actual user name from context or fallback to username
+  const initialName = user?.name || user?.username || communityUser.name;
+  const initialEmail = user?.email || communityUser.email;
+  
+  const [name, setName] = useState(initialName);
+  const [email, setEmail] = useState(initialEmail);
 
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const parts = name.trim().split(' ');
+      const first_name = parts[0] || '';
+      const last_name = parts.slice(1).join(' ') || '';
+      
+      await updateProfile({ first_name, last_name, email });
+      setEditing(false);
+      showToast('Profile updated successfully');
+    } catch (err: any) {
+      showToast(err.message || 'Failed to update profile');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const showToast = (msg: string) => {
@@ -36,10 +59,10 @@ export function CommunityProfile() {
       <div className="card mb-6 p-5">
         <div className="mb-4 flex items-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-100 text-xl font-bold text-primary-700">
-            {(user?.name || communityUser.name).split(' ').map((n) => n[0]).join('').slice(0, 2)}
+            {initialName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
           </div>
           <div>
-            <p className="text-lg font-bold text-slate-900">{user?.name || communityUser.name}</p>
+            <p className="text-lg font-bold text-slate-900">{user?.name || user?.username || communityUser.name}</p>
             <p className="text-sm text-slate-500">{user?.email || communityUser.email}</p>
           </div>
         </div>
@@ -64,12 +87,13 @@ export function CommunityProfile() {
           ) : (
             <>
               <button
-                onClick={() => { setEditing(false); showToast('Profile updated successfully'); }}
+                onClick={handleSave}
+                disabled={saving}
                 className="btn-primary text-sm"
               >
-                <Check className="h-4 w-4" /> Save Changes
+                <Check className="h-4 w-4" /> {saving ? 'Saving...' : 'Save Changes'}
               </button>
-              <button onClick={() => { setEditing(false); setName(user?.name || communityUser.name); setEmail(user?.email || communityUser.email); }} className="btn-secondary text-sm">
+              <button onClick={() => { setEditing(false); setName(initialName); setEmail(initialEmail); }} disabled={saving} className="btn-secondary text-sm">
                 Cancel
               </button>
             </>

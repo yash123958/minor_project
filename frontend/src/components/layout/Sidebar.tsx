@@ -14,6 +14,7 @@ import {
   LogOut,
   Activity,
   X,
+  User,
 } from 'lucide-react';
 import { currentUser } from '@/data/mockData';
 
@@ -27,7 +28,7 @@ const navItems = [
   { to: '/alerts', label: 'Alerts', icon: Bell },
   { to: '/villages', label: 'Villages', icon: MapPin },
   { to: '/admin', label: 'Administration', icon: Users },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/settings', label: 'Profile & Settings', icon: User },
 ];
 
 interface SidebarProps {
